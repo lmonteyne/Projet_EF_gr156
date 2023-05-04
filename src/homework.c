@@ -7,7 +7,24 @@
 //- On teste plusieurs matériaux avec des modules de young différents
 //- On sélectionne le matériau le plus résistant (le moins déformé) et le plus écologique (car ÉCOduc)
 
+//À rajouter:
+//Conditions essentielles (Dirichlet) en normale/tengentielle: 1 seul déplacement normal ou tangentiel
+//Déplacement normal = 0: équation correspondante : nx * ux + ny *uy = 0 -> au lieu d'avoir 1 dans la matrice A on aura nx et ny (càd sin et cos)
 
+//Combili pour que dans la matrice on ait: nx * ligne x + ny * ligne y
+//Tangentielle:
+//Quand on impose le déplacement sur une des 2 équations: ex dépl normal = 0
+
+//nx * équation en x + ny * équation en y -> conditions en normale
+//-ny * équation en x + nx * équation en y (vérifier les signes) -> conditions en tangentielle
+//nx et ny varient pour chaque noeuds = moyenne des normales des deux segments adjacents, pondérée par la longueur des segments
+//Exemple: poutre dans le mur: endroit dans le mur = dirichlet à 0, si un poids sur la poutre = Neumann non homogène, partt ailleurs = Neumann homogène
+//Conditions normales (Neumann) en xy et en normale/tangentielle
+
+//1) Remplacer nouvelles lignes:  0 0 0 cos,sin 0 0 0 = déplacement normal (tangentiel = -sin cos)
+//2) Imposer déplacement normal ou tangentiel en fonction de ce qu'on veut imposer
+
+//modifier principalement les boundary conditions (pas le code en lui-même)
 
 
 
