@@ -8,6 +8,10 @@
  *
  */
  
+#include <stdio.h>
+#include <math.h>
+
+#include "fem.h"
 #include "glfem.h"
 
 
@@ -17,8 +21,7 @@ int main(void)
     printf("    D : Domains \n");
     printf("    N : Next domain highlighted\n\n\n");
 
-
-    double Lx = 1.0;
+    double Lx = 3.5;
     double Ly = 1.0;
       
     geoInitialize();
@@ -26,7 +29,7 @@ int main(void)
     
     theGeometry->LxPlate     =  Lx;
     theGeometry->LyPlate     =  Ly;     
-    theGeometry->h           =  Lx * 0.05;    
+    theGeometry->h           =  Lx * 0.05;
     theGeometry->elementType = FEM_QUAD;
   
     geoMeshGenerate();
@@ -55,7 +58,7 @@ int main(void)
 //
     
     femNodes *theNodes = theGeometry->theNodes;
-    double deformationFactor = 1e5;
+    double deformationFactor = 1;
     double *normDisplacement = malloc(theNodes->nNodes * sizeof(double));
     
     for (int i=0; i<theNodes->nNodes; i++){
