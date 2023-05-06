@@ -28,39 +28,44 @@
 
 
 
-void geoMeshGenerate() {
+void geoMeshGenerate(){
 
-   femGeo* theGeometry = geoGetGeometry();
+    femGeo* theGeometry = geoGetGeometry();
 
-   double w = theGeometry->LxPlate;
-   double h = theGeometry->LyPlate;
+    double w = theGeometry->LxPlate;
+    double h = theGeometry->LyPlate;
    
-   int ierr;
-   double r = w/4;
-   int idRect = gmshModelOccAddRectangle(0.0,0.0,0.0,w,h,-1,0.0,&ierr);
-   int idDisk = gmshModelOccAddDisk(w/2.0,h/2.0,0.0,r,r,-1,NULL,0,NULL,0,&ierr);
-   int idSlit = gmshModelOccAddRectangle(w/2.0,h/2.0-r,0.0,w,2.0*r,-1,0.0,&ierr);
-   int rect[] = {2,idRect};
-   int disk[] = {2,idDisk};
-   int slit[] = {2,idSlit};
+    int ierr;
+    int x0 = 0.0;
+    int y0 = 0.0;
+    
+    // Use OPENCASCADE to describe the geometrical entities
+    int idRect = gmshModelOccAddRectangle(x0, y0 , 0, w, h, -1, 0, &ierr);
+    int idDisk[2];
+    idDisk[0] = gmshModelOccAddDisk(x0+1., y0, 0, .5, .5, -1, NULL, 0, NULL, 0, &ierr);
+    idDisk[1] = gmshModelOccAddDisk(x0+2.5, y0, 0, .5, .5, -1, NULL, 0, NULL, 0, &ierr);
+    int object[] = {2, idRect};
+    int tool0[] = {2, idDisk[0]};
+    int tool1[] = {2, idDisk[1]};
 
-   gmshModelOccCut(rect,2,disk,2,NULL,NULL,NULL,NULL,NULL,-1,1,1,&ierr);
-   gmshModelOccCut(rect,2,slit,2,NULL,NULL,NULL,NULL,NULL,-1,1,1,&ierr);
-   gmshModelOccSynchronize(&ierr);
+    gmshModelOccCut(object,2,tool0,2,NULL,NULL,NULL,NULL,NULL,-1,1,1,&ierr);
+    gmshModelOccCut(object,2,tool1,2,NULL, NULL, NULL, NULL, NULL, -1, 1, 1, &ierr);
+    // pass the OPENCASCADE data to GMSH
+    gmshModelOccSynchronize(&ierr);
 
-   if (theGeometry->elementType == FEM_QUAD) {
-       gmshOptionSetNumber("Mesh.SaveAll",1,&ierr);
-       gmshOptionSetNumber("Mesh.RecombineAll",1,&ierr);
-       gmshOptionSetNumber("Mesh.Algorithm",8,&ierr);
-       gmshOptionSetNumber("Mesh.RecombinationAlgorithm",1.0,&ierr);
-       gmshModelGeoMeshSetRecombine(2,1,45,&ierr);
-       gmshModelMeshGenerate(2,&ierr);  }
+    if (theGeometry->elementType == FEM_QUAD) {
+        gmshOptionSetNumber("Mesh.SaveAll",1,&ierr);
+        gmshOptionSetNumber("Mesh.RecombineAll",1,&ierr);
+        gmshOptionSetNumber("Mesh.Algorithm",8,&ierr);
+        gmshOptionSetNumber("Mesh.RecombinationAlgorithm",1.0,&ierr);
+        gmshModelGeoMeshSetRecombine(2,1,45,&ierr);
+        gmshModelMeshGenerate(2,&ierr);  }
  
-   if (theGeometry->elementType == FEM_TRIANGLE) {
-       gmshOptionSetNumber("Mesh.SaveAll",1,&ierr);
-       gmshModelMeshGenerate(2,&ierr);  }
+    if (theGeometry->elementType == FEM_TRIANGLE) {
+        gmshOptionSetNumber("Mesh.SaveAll",1,&ierr);
+        gmshModelMeshGenerate(2,&ierr);  }
 
-   return;
+    return;
 }
 
 
